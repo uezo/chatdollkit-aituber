@@ -38,8 +38,8 @@ class ChatdollKitClient:
         finally:
             self.close()
 
-    def dialog(self, operation: str, text: str = None, priority: int = 10):
-        self.send_message("dialog", operation, text=text, priority=priority)
+    def dialog(self, operation: str, text: str = None, data: dict = None, priority: int = 10):
+        self.send_message("dialog", operation, text=text, payloads=data, priority=priority)
 
     def process_dialog(self, text: str, priority: int = 10):
         self.dialog("process", text=text, priority=priority)
@@ -47,8 +47,14 @@ class ChatdollKitClient:
     def clear_dialog_queue(self, priority: int = 0):
         self.dialog("clear", priority=priority)
 
-    def model(self, text: str):
-        self.send_message("model", "perform", text=text)
+    def model(self, operation: str, text: str = None, data: dict = None):
+        self.send_message("model", operation, text=text, payloads=data)
 
     def config(self, data: dict):
         self.send_message("config", "apply", payloads=data)
+
+    def speech_synthesizer(self, operation: str, data: dict):
+        self.send_message("speech_synthesizer", operation, payloads=data)
+
+    def llm(self, operation: str, data: dict):
+        self.send_message("llm", operation, payloads=data)
