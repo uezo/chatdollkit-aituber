@@ -58,3 +58,13 @@ class ChatdollKitClient:
 
     def llm(self, operation: str, data: dict):
         self.send_message("llm", operation, payloads=data)
+
+    def reconnect(self, host: str = None, port: int = None):
+        self.close()
+
+        if self.host:
+            self.host = host
+        if self.port:
+            self.port = port
+        
+        self.connect()

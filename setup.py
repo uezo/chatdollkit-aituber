@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="chatdollkit_aituber",
-    version="0.2.0",
+    version="0.2.1",
     url="https://github.com/uezo/chatdollkit-aituber",
     author="uezo",
     author_email="uezo@uezo.net",

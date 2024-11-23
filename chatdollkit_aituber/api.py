@@ -61,13 +61,15 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         camera_position_y: float = 1.23,
         camera_rotation_x: float = 0.0,
         camera_field_of_view: float = 16.0,
+        camera_background_color: str = "#00FF00"
     ):
         client.model("appearance", text=None, data={
             "position_x": position_x,
             "rotation_y": rotation_y,
             "camera_position_y": camera_position_y,
             "camera_rotation_x": camera_rotation_x,
-            "camera_field_of_view": camera_field_of_view
+            "camera_field_of_view": camera_field_of_view,
+            "camera_background_color": camera_background_color
         })
         return JSONResponse(content={"result": "success"})
 
@@ -110,6 +112,11 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
     @api_router.post("/llm/debug", tags=["LLM"])
     async def post_llm_debug(debug_mode: bool = False):
         client.llm("debug", data={"debug_mode": debug_mode})
+        return JSONResponse(content={"result": "success"})
+
+    @api_router.post("/system/reconnect", tags=["System"])
+    async def post_system_reconnect(host: str = None, port: int = None):
+        client.reconnect(host, port)
         return JSONResponse(content={"result": "success"})
 
     return api_router
