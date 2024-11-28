@@ -7,6 +7,31 @@ class ChatdollKitClient:
     def __init__(self, host: str = "localhost", port: int = 8888):
         self.host = host
         self.port = port
+        self.current_config = {
+            "dialog": {"auto_pilot": {}},
+            "model": {},
+            "speech_synthesizer": {},
+            "llm": {}
+        }
+
+    def update_current_config(self, endpoint: str, operation: str, *, text: str = None, payloads: dict = None):
+        if endpoint == "dialog":
+            if operation == "auto_pilot":
+                del payloads["is_on"]
+            else:
+                return
+        
+        elif endpoint == "model":
+            if operation == "perform":
+                return
+
+        self.current_config[endpoint][operation] = {"text": text, "payloads": payloads}
+
+    def apply_config(self, config: dict):
+        for endpoint, operation_kv in config.items():
+            for operation, v in operation_kv.items():
+                if v:
+                    self.send_message(endpoint, operation, text=v["text"], payloads=v["payloads"])
 
     def connect(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,6 +56,9 @@ class ChatdollKitClient:
 
             self.client_socket.sendall((message + "\n").encode("utf-8"))
             print(f"Message sent: {message}")
+
+            # Update current config
+            self.update_current_config(endpoint, operation, text=text, payloads=payloads)
 
         except Exception as ex:
             print(f"Failed to send message: {ex}\n{traceback.format_exc()}")

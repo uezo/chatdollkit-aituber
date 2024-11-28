@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
 from .client import ChatdollKitClient
@@ -112,6 +113,19 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
     @api_router.post("/llm/debug", tags=["LLM"])
     async def post_llm_debug(debug_mode: bool = False):
         client.llm("debug", data={"debug_mode": debug_mode})
+        return JSONResponse(content={"result": "success"})
+
+    @api_router.get("/system/config", tags=["System"])
+    async def get_system_current_config():
+        return JSONResponse(content=client.current_config)
+
+    @api_router.post("/system/config", tags=["System"])
+    async def post_system_current_config(config: dict):
+        if "load" in config["model"]:
+            client.model("load", text=config["model"]["load"]["text"])
+            await asyncio.sleep(5.0)
+            del config["model"]["load"]
+        client.apply_config(config)
         return JSONResponse(content={"result": "success"})
 
     @api_router.post("/system/reconnect", tags=["System"])
