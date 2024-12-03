@@ -27,6 +27,11 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         client.process_dialog(text=text, priority=priority)
         return JSONResponse(content={"result": "success"})
 
+    @api_router.post("/dialog/append_next", tags=["Dialog"])
+    async def post_dialog_append_next(text: str = None):
+        client.dialog(operation="append_next", text=text)
+        return JSONResponse(content={"result": "success"})
+
     @api_router.post("/dialog/auto_pilot", tags=["Dialog"])
     async def post_autopilot(
         is_on: bool,
@@ -44,6 +49,20 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
     async def post_dialog_clear_context():
         client.dialog(operation="clear_context")
         return JSONResponse(content={"result": "success"})
+
+    @api_router.post("/dialog/connect_to_aiavatar", tags=["Dialog"])
+    async def post_dialog_connect_to_aiavatar(
+        address: str,
+        port: int
+    ):
+        client.dialog(operation="connect_to_aiavatar", data={"address": address, "port": port})
+        return JSONResponse(content={"result": "success"})
+
+    @api_router.post("/dialog/disconnect_from_aiavatar", tags=["Dialog"])
+    async def post_dialog_disconnect_from_aiavatar():
+        client.dialog(operation="disconnect_from_aiavatar")
+        return JSONResponse(content={"result": "success"})
+
 
     @api_router.post("/model/perform", tags=["Model"])
     async def post_model_perform(text: str):
@@ -92,6 +111,11 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         })
         return JSONResponse(content={"result": "success"})
 
+    @api_router.post("/speech_synthesizer/styles", tags=["Speech Synthesizer"])
+    async def post_speech_synthesizer_styles(styles: dict):
+        client.speech_synthesizer("styles", data={"styles": styles})
+        return JSONResponse(content={"result": "success"})
+
 
     @api_router.post("/llm/activate", tags=["LLM"])
     async def post_llm_activate(
@@ -110,10 +134,16 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         client.llm("system_prompt", data={"system_prompt": system_prompt})
         return JSONResponse(content={"result": "success"})
 
+    @api_router.post("/llm/cot_tag", tags=["LLM"])
+    async def post_llm_cot_tag(cot_tag: str):
+        client.llm("cot_tag", data={"cot_tag": cot_tag})
+        return JSONResponse(content={"result": "success"})
+
     @api_router.post("/llm/debug", tags=["LLM"])
     async def post_llm_debug(debug_mode: bool = False):
         client.llm("debug", data={"debug_mode": debug_mode})
         return JSONResponse(content={"result": "success"})
+
 
     @api_router.get("/system/config", tags=["System"])
     async def get_system_current_config():
