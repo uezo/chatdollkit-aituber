@@ -122,9 +122,14 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         name: str = "chatgpt",
         api_key: str = "sk-YOUR_API_KEY",
         model: str = "gpt-4o",
-        temperature: float = 0.5
+        temperature: float = 0.5,
+        url: str = None,
+        user: str = None
     ):
-        client.llm("activate", data={"name": name, "api_key": api_key, "model": model, "temperature": temperature})
+        client.llm("activate", data={
+            "name": name, "api_key": api_key, "model": model,
+            "temperature": temperature, "url": url, "user": user
+        })
         return JSONResponse(content={"result": "success"})
 
     @api_router.post("/llm/system_prompt", tags=["LLM"])
