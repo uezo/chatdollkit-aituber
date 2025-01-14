@@ -124,11 +124,13 @@ def get_router(client: ChatdollKitClient) -> APIRouter:
         model: str = "gpt-4o",
         temperature: float = 0.5,
         url: str = None,
-        user: str = None
+        user: str = None,
+        is_azure: bool = False
     ):
         client.llm("activate", data={
             "name": name, "api_key": api_key, "model": model,
-            "temperature": temperature, "url": url, "user": user
+            "temperature": temperature, "url": url, "user": user,
+            "is_azure": is_azure
         })
         return JSONResponse(content={"result": "success"})
 
